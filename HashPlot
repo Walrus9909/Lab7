@@ -1,0 +1,70 @@
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.util.HashMap;
+import java.util.Scanner;
+
+import org.jfree.chart.ChartFactory;
+import org.jfree.chart.JFreeChart;
+import org.jfree.data.xy.XYDataset;
+import org.jfree.data.xy.XYSeries;
+import org.jfree.data.xy.XYSeriesCollection;
+
+public class HashPlot {
+
+	public static void main(String[] args) throws FileNotFoundException {
+
+		HashMap<Integer, Integer> hmap = new HashMap<Integer, Integer>();
+		int a = Integer.parseInt((args[0]));
+		int b = Integer.parseInt((args[1]));
+		int m = Integer.parseInt((args[2]));
+		String temp;
+		int hashKey;
+		int hashValue;
+		File in = null;
+		Scanner sc;
+		String chartName = "Distribution Chart";
+		String xAxisLabel = "k";
+		String yAxisLabel = "H(k)";
+
+		try {
+			in = new File(args[3]);
+		} catch (IllegalArgumentException i) {
+			System.out.println("File does not exist");
+			System.exit(0);
+		}
+
+		sc = new Scanner(in);
+
+		while (sc.hasNext()) {
+			temp = sc.next();
+			temp = temp.substring(0, temp.length() - 1);
+			hashKey = Integer.parseInt(temp);
+			hashValue = (a * hashKey + b) % m;
+			hmap.put(hashKey, hashValue);
+		}
+		
+		XYDataset dataset = createDataset(hmap);
+		JFreeChart chart = ChartFactory.createScatterPlot(chartName, 
+				xAxisLabel, yAxisLabel, dataset);
+
+		for (HashMap.Entry<Integer, Integer> entry : hmap.entrySet()) {
+			System.out.println(entry.getKey() + ":" + entry.getValue());
+		}
+
+		sc.close();
+
+	}
+
+	public static XYDataset createDataset(HashMap<Integer, Integer> hmap) {
+		XYSeriesCollection dataset = new XYSeriesCollection();
+
+		XYSeries series = new XYSeries("test");
+		for (HashMap.Entry<Integer, Integer> entry : hmap.entrySet()) {
+			series.add(entry.getKey(), entry.getValue());
+		}
+
+		dataset.addSeries(series);
+		return dataset;
+	}
+
+}
