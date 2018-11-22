@@ -1,15 +1,43 @@
+
+import java.awt.Color;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.HashMap;
 import java.util.Scanner;
 
+import javax.swing.JFrame;
+import javax.swing.WindowConstants;
+
 import org.jfree.chart.ChartFactory;
+import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
+import org.jfree.chart.plot.XYPlot;
 import org.jfree.data.xy.XYDataset;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
 
-public class HashPlot {
+public class HashPlot extends JFrame {
+
+	static XYDataset dataset;
+
+	public HashPlot(String title, HashMap<Integer, Integer> hmap) {
+		super(title);
+
+		// Create dataset
+		dataset = createDataset(hmap);
+
+		// Create chart
+		JFreeChart chart = ChartFactory.createScatterPlot("Boys VS Girls weight comparison chart", "X-Axis", "Y-Axis",
+				dataset);
+
+		// Changes background color
+		XYPlot plot = (XYPlot) chart.getPlot();
+		plot.setBackgroundPaint(new Color(255, 228, 196));
+
+		// Create Panel
+		ChartPanel panel = new ChartPanel(chart);
+		setContentPane(panel);
+	}
 
 	public static void main(String[] args) throws FileNotFoundException {
 
@@ -42,11 +70,13 @@ public class HashPlot {
 			hashValue = (a * hashKey + b) % m;
 			hmap.put(hashKey, hashValue);
 		}
-		
-		XYDataset dataset = createDataset(hmap);
-		JFreeChart chart = ChartFactory.createScatterPlot(chartName, 
-				xAxisLabel, yAxisLabel, dataset);
 
+		HashPlot hplot = new HashPlot("HashPlot Example", hmap);
+		JFreeChart chart = ChartFactory.createScatterPlot(chartName, xAxisLabel, yAxisLabel, dataset);
+		hplot.setSize(800, 400);
+		hplot.setLocationRelativeTo(null);
+		hplot.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+		hplot.setVisible(true);
 		for (HashMap.Entry<Integer, Integer> entry : hmap.entrySet()) {
 			System.out.println(entry.getKey() + ":" + entry.getValue());
 		}
