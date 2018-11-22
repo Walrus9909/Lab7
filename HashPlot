@@ -60,7 +60,6 @@ public class HashPlot {
 		Graphics2D buff = bufferedImage.createGraphics();
 		buff.setColor(Color.WHITE);
 		buff.fillRect(0, 0, 650, 550);
-		int x, y;
 		buff.setColor(Color.BLACK);
 
 		for (Integer name : hmap.keySet()) {
