@@ -1,6 +1,7 @@
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
+import java.awt.image.RenderedImage;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.HashMap;
@@ -11,8 +12,7 @@ import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
 import javax.swing.WindowConstants;
 
-public class HashPlot extends JFrame {
-
+public class HashPlot {
 
 	public static void main(String[] args) throws FileNotFoundException {
 
@@ -20,7 +20,7 @@ public class HashPlot extends JFrame {
 		int a = Integer.parseInt((args[0]));
 		int b = Integer.parseInt((args[1]));
 		int m = Integer.parseInt((args[2]));
-		
+
 		String temp;
 		int hashKey;
 		int hashValue;
@@ -43,44 +43,38 @@ public class HashPlot extends JFrame {
 			hashValue = (a * hashKey + b) % m;
 			hmap.put(hashKey, hashValue);
 		}
-		
-		for (Integer name: hmap.keySet()){
 
-            String key =name.toString();
-            String value = hmap.get(name).toString();  
-            System.out.println(key + " " + value);  
+		for (Integer name : hmap.keySet()) {
 
+			String key = name.toString();
+			String value = hmap.get(name).toString();
+			System.out.println(key + " " + value);
 
-} 
+		}
 
 		sc.close();
 
+		// PLOTTING THE PLOTS
+
+		BufferedImage bufferedImage = new BufferedImage(650, 550, BufferedImage.TYPE_INT_RGB);
+		Graphics2D buff = bufferedImage.createGraphics();
+		buff.setColor(Color.WHITE);
+		buff.fillRect(0, 0, 650, 550);
+		int x, y;
+		buff.setColor(Color.BLACK);
+
+		for (Integer name : hmap.keySet()) {
+			buff.fillOval(name, hmap.get(name), 5, 5);
+		}
+
+		buff.dispose();
+		RenderedImage rendImage = bufferedImage;
+
+		try {
+			File file = new File("goodhash.png");
+			ImageIO.write(rendImage, "png", file);
+		} catch (Exception n) {
+
+		}
 	}
-	
-	//PLOTTING THE PLOTS
-	
-	BufferedImage bufferedImage = new BufferedImage(650,550, BufferedImage.TYPE_INT_RGB);
-	Graphics2D buff = bufferedImage.createGraphics();
-	buff.setColor(Color.WHITE);
-	buff.fillRect(0,0,650,550);
-	int x,y;
-	buff.setColor(Color.BLACK);
-	
-	for (Integer name: hmap.keySet()){ 
-	buff.fillOval(name, hmap.get(name), 5, 5);
-	} 
-
-	buff.dispose();
-	RenderedImage rendImage = bufferedImage;
-	
-	try
-	{
-		File file = new File("goodhash.png");
-		ImageIO.write(rendImage, "png", file);
-	} catch(Exception n) {
-		
-		
-	}
-
-
 }
