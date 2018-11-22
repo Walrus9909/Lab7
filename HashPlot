@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.Scanner;
 
 import javax.swing.JFrame;
+import javax.swing.SwingUtilities;
 import javax.swing.WindowConstants;
 
 import org.jfree.chart.ChartFactory;
@@ -16,28 +17,9 @@ import org.jfree.data.xy.XYDataset;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
 
+
 public class HashPlot extends JFrame {
 
-	static XYDataset dataset;
-
-	public HashPlot(String title, HashMap<Integer, Integer> hmap) {
-		super(title);
-
-		// Create dataset
-		dataset = createDataset(hmap);
-
-		// Create chart
-		JFreeChart chart = ChartFactory.createScatterPlot("Boys VS Girls weight comparison chart", "X-Axis", "Y-Axis",
-				dataset);
-
-		// Changes background color
-		XYPlot plot = (XYPlot) chart.getPlot();
-		plot.setBackgroundPaint(new Color(255, 228, 196));
-
-		// Create Panel
-		ChartPanel panel = new ChartPanel(chart);
-		setContentPane(panel);
-	}
 
 	public static void main(String[] args) throws FileNotFoundException {
 
@@ -45,6 +27,7 @@ public class HashPlot extends JFrame {
 		int a = Integer.parseInt((args[0]));
 		int b = Integer.parseInt((args[1]));
 		int m = Integer.parseInt((args[2]));
+		
 		String temp;
 		int hashKey;
 		int hashValue;
@@ -70,31 +53,19 @@ public class HashPlot extends JFrame {
 			hashValue = (a * hashKey + b) % m;
 			hmap.put(hashKey, hashValue);
 		}
+		
+		for (Integer name: hmap.keySet()){
 
-		HashPlot hplot = new HashPlot("HashPlot Example", hmap);
-		JFreeChart chart = ChartFactory.createScatterPlot(chartName, xAxisLabel, yAxisLabel, dataset);
-		hplot.setSize(800, 400);
-		hplot.setLocationRelativeTo(null);
-		hplot.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-		hplot.setVisible(true);
-		for (HashMap.Entry<Integer, Integer> entry : hmap.entrySet()) {
-			System.out.println(entry.getKey() + ":" + entry.getValue());
-		}
+            String key =name.toString();
+            String value = hmap.get(name).toString();  
+            System.out.println(key + " " + value);  
+
+
+} 
 
 		sc.close();
 
 	}
 
-	public static XYDataset createDataset(HashMap<Integer, Integer> hmap) {
-		XYSeriesCollection dataset = new XYSeriesCollection();
-
-		XYSeries series = new XYSeries("test");
-		for (HashMap.Entry<Integer, Integer> entry : hmap.entrySet()) {
-			series.add(entry.getKey(), entry.getValue());
-		}
-
-		dataset.addSeries(series);
-		return dataset;
-	}
 
 }
